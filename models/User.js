@@ -12,7 +12,7 @@ const userSchema = Schema(
       required: true,
     },
     name: {
-      type: true,
+      type: String,
       required: true,
     },
     level: {
