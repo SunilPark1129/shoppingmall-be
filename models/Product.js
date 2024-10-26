@@ -8,7 +8,11 @@ const productSchema = Schema(
       unique: true,
     },
     name: {
-      type: true,
+      type: String,
+      required: true,
+    },
+    size: {
+      type: Array,
       required: true,
     },
     image: {

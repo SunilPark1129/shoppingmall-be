@@ -22,6 +22,7 @@ userController.createUser = async (req, res) => {
       name,
       level: level ? level : "customer",
     });
+
     await newUser.save();
     return res.status(200).json({ status: "success" });
   } catch (error) {
