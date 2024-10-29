@@ -105,4 +105,15 @@ productController.updateProduct = async (req, res) => {
   }
 };
 
+productController.deleteProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findByIdAndDelete({ _id: productId });
+    if (!product) throw new Error("could not find item id");
+    res.status(200).json({ status: "success", data: product });
+  } catch (error) {
+    res.status(400).json({ status: "fail", data: error.message });
+  }
+};
+
 module.exports = productController;
