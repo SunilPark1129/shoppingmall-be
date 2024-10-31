@@ -6,13 +6,10 @@ const orderController = {};
 
 orderController.createOrder = async (req, res) => {
   try {
-    console.log("start");
     // 프론트에서 받아오는 값들
     // userId, totalPrice, shipTo, contact, orderList
     const { userId } = req;
     const { shipTo, contact, totalPrice, orderList } = req.body;
-
-    console.log(userId);
 
     // 재고 확인 & 재고 업데이트
     const insufficientStockItems = await productController.checkItemListStock(
@@ -40,7 +37,6 @@ orderController.createOrder = async (req, res) => {
       orderNum: orderNum,
     });
     await newOrder.save();
-    console.log(newOrder);
     res.status(200).json({ status: "success", orderNum });
   } catch (error) {
     res.status(400).json({ status: "fail", message: error.message });

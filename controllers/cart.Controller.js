@@ -9,7 +9,7 @@ cartController.addItemToCart = async (req, res) => {
     // 유저를 가지고 카트 찾기
     let cart = await Cart.findOne({ userId });
     if (!cart) {
-      // 유저가 만든 카트가 없다, 만들어주기
+      // 유저가 만든 카트가 없다, 만들기
       cart = new Cart({ userId });
       await cart.save();
     }
