@@ -50,4 +50,65 @@ cartController.getCart = async (req, res) => {
   }
 };
 
+cartController.getCartQty = async (req, res) => {
+  try {
+    const { userId } = req;
+    const cart = await Cart.findOne({ userId });
+    const qty = cart.items.length;
+    if (!cart) throw new Error("카트에서 아이템을 찾을 수 없습니다");
+    res.status(200).json({ status: "success", qty });
+  } catch (error) {
+    return res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+cartController.deleteCart = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req;
+    console.log(id);
+    const cart = await Cart.findOne({ userId });
+    console.log("ffff", cart);
+    cart.items = cart.items.filter(({ _id }) => !_id.equals(id));
+    console.log("ddddd", cart);
+    await cart.save();
+    console.log("done!");
+    res.status(200).json({
+      status: "success",
+      message: "카트의 아이템을 성공적으로 제거 완료",
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+cartController.updateQty = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = req;
+    const { qty } = req.body;
+    const cart = await Cart.findOne({ userId });
+
+    // index 값을 찾는다
+    // ObjectId 타입이므로 equals를 사용하여 해당 id와 비교한다
+    const target = cart.items.findIndex(({ _id }) => _id.equals(id));
+
+    // 찾는것을 실패 했을때
+    if (target === -1) throw new Error("수정할 아이템을 찾을 수 없습니다");
+
+    cart.items[target].qty = qty;
+    cart.items = [...cart.items];
+    console.log(cart);
+
+    await cart.save();
+
+    res.status(200).json({
+      status: "success",
+      data: cart.items,
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
 module.exports = cartController;
