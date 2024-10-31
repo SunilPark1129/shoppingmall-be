@@ -26,6 +26,10 @@ const orderSchema = Schema(
       type: String,
       default: "preparing",
     },
+    orderNum: {
+      type: String,
+      required: true,
+    },
     items: [
       {
         productId: {
