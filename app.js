@@ -6,7 +6,12 @@ const indexRouter = require("./routes/index");
 const app = express();
 
 require("dotenv").config();
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:3000", // 허용할 클라이언트 URL
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // 허용할 HTTP 메서드
+  allowedHeaders: ["Content-Type", "Authorization"], // 허용할 헤더
+};
+app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
