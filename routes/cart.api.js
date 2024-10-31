@@ -1,6 +1,6 @@
 const express = require("express");
 const authController = require("../controllers/auth.controller");
-const cartController = require("../controllers/cart.Controller");
+const cartController = require("../controllers/cart.controller");
 const router = express.Router();
 
 // 카트에 아이템 생성하기
