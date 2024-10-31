@@ -73,7 +73,21 @@ productController.getProduct = async (req, res) => {
 
     res.status(200).json({ ...response });
   } catch (error) {
-    res.status(400).json({ status: "fail", error: error.message });
+    res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+productController.getDetail = async (req, res) => {
+  try {
+    let { id } = req.query;
+    const product = await Product.findById(
+      { _id: id },
+      "-createdAt -updatedAt -__v"
+    );
+    if (!product) throw new Error("item doesn't exist");
+    res.status(200).json({ status: "success", data: product });
+  } catch (error) {
+    res.status(400).json({ status: "fail", message: error.message });
   }
 };
 

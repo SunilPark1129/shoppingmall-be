@@ -12,6 +12,8 @@ router.post(
 
 router.get("/", productController.getProduct);
 
+router.get("/detail", productController.getDetail);
+
 router.put(
   "/:id",
   authController.authenticate,
