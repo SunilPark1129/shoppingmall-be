@@ -66,11 +66,8 @@ cartController.deleteCart = async (req, res) => {
   try {
     const { id } = req.params;
     const { userId } = req;
-    console.log(id);
     const cart = await Cart.findOne({ userId });
-    console.log("ffff", cart);
     cart.items = cart.items.filter(({ _id }) => !_id.equals(id));
-    console.log("ddddd", cart);
     await cart.save();
     console.log("done!");
     res.status(200).json({
