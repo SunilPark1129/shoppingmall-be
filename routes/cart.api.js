@@ -17,6 +17,11 @@ router.get(
 );
 
 // 카트 아이템 제거
+router.delete(
+  "/all",
+  authController.authenticate,
+  cartController.deleteCartAll
+);
 router.delete("/:id", authController.authenticate, cartController.deleteCart);
 
 router.put(

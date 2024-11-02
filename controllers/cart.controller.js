@@ -69,10 +69,22 @@ cartController.deleteCart = async (req, res) => {
     const cart = await Cart.findOne({ userId });
     cart.items = cart.items.filter(({ _id }) => !_id.equals(id));
     await cart.save();
-    console.log("done!");
     res.status(200).json({
       status: "success",
       message: "카트의 아이템을 성공적으로 제거 완료",
+    });
+  } catch (error) {
+    return res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+cartController.deleteCartAll = async (req, res) => {
+  try {
+    const { userId } = req;
+    await Cart.updateOne({ userId }, { $set: { items: [] } });
+    res.status(200).json({
+      status: "success",
+      message: "카트의 모든 아이템을 성공적으로 제거 완료",
     });
   } catch (error) {
     return res.status(400).json({ status: "fail", message: error.message });
