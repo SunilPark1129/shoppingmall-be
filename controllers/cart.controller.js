@@ -54,8 +54,8 @@ cartController.getCartQty = async (req, res) => {
   try {
     const { userId } = req;
     const cart = await Cart.findOne({ userId });
-    const qty = cart.items.length;
     if (!cart) throw new Error("카트에서 아이템을 찾을 수 없습니다");
+    const qty = cart.items.length;
     res.status(200).json({ status: "success", qty });
   } catch (error) {
     return res.status(400).json({ status: "fail", message: error.message });
