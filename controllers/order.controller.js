@@ -3,7 +3,7 @@ const { randomStringGenerator } = require("../utils/randomStringGenerator");
 const productController = require("./product.controller");
 
 const orderController = {};
-const PAGE_SIZE = 8;
+const PAGE_SIZE = 10;
 
 orderController.createOrder = async (req, res) => {
   try {
@@ -59,9 +59,7 @@ orderController.getOrder = async (req, res) => {
     const totalItemNum = await Order.find({ userId }).countDocuments();
 
     const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
-    console.log("start");
 
-    console.log(totalPageNum);
     res.status(200).json({ status: "success", data: orderList, totalPageNum });
   } catch (error) {
     return res.status(400).json({ status: "fail", error: error.message });
@@ -70,12 +68,34 @@ orderController.getOrder = async (req, res) => {
 
 orderController.getOrderList = async (req, res) => {
   try {
-    const { userId } = req;
-    const orderList = await Order.findOne({ userId });
+    let { page, orderNum } = req.query;
+    page = page || 1;
 
-    if (!orderList) throw new Error("주문하신 오더가 없습니다");
+    // 몽구스만 사용하는 용도 $regex
+    const cond = orderNum
+      ? {
+          orderNum: { $regex: orderNum, $options: "i" },
+        }
+      : {};
 
-    res.status(200).json({ status: "success", data: orderList });
+    const orderList = await Order.find(cond)
+      .populate("userId")
+      .populate({
+        path: "items",
+        populate: {
+          path: "productId",
+          model: "Product",
+          select: "image name",
+        },
+      })
+      .skip((page - 1) * PAGE_SIZE)
+      .limit(PAGE_SIZE);
+
+    const totalItemNum = await Order.find(cond).countDocuments();
+
+    const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
+
+    res.status(200).json({ status: "success", data: orderList, totalPageNum });
   } catch (error) {
     res.status(400).json({ status: "fail", message: error.message });
   }
