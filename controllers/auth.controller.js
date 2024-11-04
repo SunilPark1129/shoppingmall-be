@@ -31,6 +31,8 @@ authController.loginWithGoogle = async (req, res) => {
     // 토큰값을 읽어와서 => 유저정보를 뽑아내고 email
     // a. 이미 로그인을 한적이 있는 유저 => 로그인시키고 토큰값 주면 끝
     // b. 처음 로그인 시도를 한 유저 => 유저정보 먼저 새로 생성 => 토큰값
+
+    // "client secret" 는 참고로 google API에서 다른 정보를 가져오거나 사용자의 정보를 업데이트 하는대 사용함
     const { token } = req.body;
     const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
@@ -49,13 +51,11 @@ authController.loginWithGoogle = async (req, res) => {
       const randomPassword = "" + Math.floor(Math.random() * 10000000);
       const salt = await bcrypt.genSalt(10);
       const newPassword = await bcrypt.hash(randomPassword, salt);
-      console.log(3);
       user = new User({
         name,
         email,
         password: newPassword,
       });
-      console.log(4);
       await user.save();
     }
     // 토큰발행 리턴
