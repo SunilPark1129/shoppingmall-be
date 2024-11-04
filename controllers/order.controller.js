@@ -92,12 +92,25 @@ orderController.getOrderList = async (req, res) => {
       .limit(PAGE_SIZE);
 
     const totalItemNum = await Order.find(cond).countDocuments();
-
     const totalPageNum = Math.ceil(totalItemNum / PAGE_SIZE);
 
     res.status(200).json({ status: "success", data: orderList, totalPageNum });
   } catch (error) {
     res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+orderController.updateOrder = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    const order = await Order.findByIdAndUpdate(id, { status }, { new: true });
+    if (!order) throw new Error("Order not found");
+
+    next();
+  } catch (error) {
+    res.status(400).json({ status: "fail", data: error.message });
   }
 };
 
