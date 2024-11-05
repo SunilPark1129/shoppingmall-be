@@ -111,7 +111,6 @@ cartController.updateQty = async (req, res) => {
 
     cart.items[target].qty = qty;
     cart.items = [...cart.items];
-    console.log(cart);
 
     await cart.save();
 
