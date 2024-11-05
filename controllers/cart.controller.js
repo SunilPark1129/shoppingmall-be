@@ -21,7 +21,7 @@ cartController.addItemToCart = async (req, res) => {
     );
 
     // 그렇다면 에러
-    if (existItem) throw new Error("아이템이 이미 카트에 담겨 있습니다");
+    if (existItem) throw new Error("The item is already in the cart.");
 
     // 카트에 아이템 추가
     cart.items = [...cart.items, { productId, size, qty }];
@@ -75,7 +75,7 @@ cartController.deleteCart = async (req, res) => {
     await cart.save();
     res.status(200).json({
       status: "success",
-      message: "카트의 아이템을 성공적으로 제거 완료",
+      message: "Item has been successfully removed from the cart.",
     });
   } catch (error) {
     return res.status(400).json({ status: "fail", message: error.message });
@@ -88,7 +88,7 @@ cartController.deleteCartAll = async (req, res) => {
     await Cart.updateOne({ userId }, { $set: { items: [] } });
     res.status(200).json({
       status: "success",
-      message: "카트의 모든 아이템을 성공적으로 제거 완료",
+      message: "All items have been successfully removed from the cart.",
     });
   } catch (error) {
     return res.status(400).json({ status: "fail", message: error.message });
@@ -107,7 +107,7 @@ cartController.updateQty = async (req, res) => {
     const target = cart.items.findIndex(({ _id }) => _id.equals(id));
 
     // 찾는것을 실패 했을때
-    if (target === -1) throw new Error("수정할 아이템을 찾을 수 없습니다");
+    if (target === -1) throw new Error("Cannot find the item to edit.");
 
     cart.items[target].qty = qty;
     cart.items = [...cart.items];

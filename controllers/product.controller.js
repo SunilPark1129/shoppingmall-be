@@ -139,7 +139,7 @@ productController.checkStock = async (item) => {
     // 재고가 불충분하면 불충분 메세지와 함께 데이터 반환
     return {
       isVerify: false,
-      message: `${product.name}의 ${item.size} 재고가 부족합니다`,
+      message: `Insufficient stock for ${product.name} in size ${item.size}.`,
     };
   }
 

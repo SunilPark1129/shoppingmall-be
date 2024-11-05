@@ -8,11 +8,11 @@ userController.createUser = async (req, res) => {
     // 프론트에서 이미 한번 에러 핸들링을 하고 전달되지만
     // 안전 차원에서 백엔드에서도 에러 핸들링 한번 더 실행
     if (!name || !email || !password) {
-      throw new Error("필요한 모든 정보를 입력하지 않았습니다.");
+      throw new Error("You did not provide all the required information.");
     }
     const user = await User.findOne({ email });
     if (user) {
-      throw new Error("이미 가입된 유저입니다.");
+      throw new Error("You are already a registered user.");
     }
     const salt = bcrypt.genSaltSync(10);
     password = await bcrypt.hash(password, salt);
@@ -36,7 +36,7 @@ userController.getUser = async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-      throw new Error("유저를 찾을 수 없습니다");
+      throw new Error("User not found.");
     }
     res.status(200).json({ status: "success", user });
   } catch (error) {

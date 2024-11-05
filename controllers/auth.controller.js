@@ -19,7 +19,7 @@ authController.loginWithEmail = async (req, res) => {
         return res.status(200).json({ status: "success", user, token });
       }
     }
-    throw new Error("이메일 혹은 패스워드가 일치하지 않습니다.");
+    throw new Error("The email or password does not match.");
   } catch (error) {
     res.status(400).json({ status: "fail", message: error.message });
   }
