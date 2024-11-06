@@ -68,8 +68,6 @@ productController.getProduct = async (req, res) => {
       }
     }
 
-    console.log(cond);
-
     let query = Product.find(cond);
     const response = { status: "success" };
 
