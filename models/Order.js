@@ -50,6 +50,10 @@ const orderSchema = Schema(
           type: Number,
           required: true,
         },
+        sale: {
+          type: Number,
+          default: 0,
+        },
       },
     ],
   },

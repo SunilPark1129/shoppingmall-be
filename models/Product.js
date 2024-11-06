@@ -43,6 +43,10 @@ const productSchema = Schema(
       type: Boolean,
       default: false,
     },
+    sale: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

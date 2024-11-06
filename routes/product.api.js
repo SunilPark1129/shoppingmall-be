@@ -15,6 +15,14 @@ router.get("/", productController.getProduct);
 router.get("/detail", productController.getDetail);
 
 router.put(
+  "/sale/:id",
+  authController.authenticate,
+  authController.checkAdminPermission,
+  productController.updateSale,
+  productController.getProduct
+);
+
+router.put(
   "/:id",
   authController.authenticate,
   authController.checkAdminPermission,

@@ -10,7 +10,7 @@ orderController.createOrder = async (req, res) => {
     // 프론트에서 받아오는 값들
     // userId, totalPrice, shipTo, contact, orderList
     const { userId } = req;
-    const { shipTo, contact, totalPrice, orderList } = req.body;
+    const { shipTo, contact, totalPrice, orderList, sale } = req.body;
 
     // 재고 확인 & 재고 업데이트
     const insufficientStockItems = await productController.checkItemListStock(
@@ -36,6 +36,7 @@ orderController.createOrder = async (req, res) => {
       contact,
       items: orderList,
       orderNum: orderNum,
+      sale,
     });
     await newOrder.save();
     res.status(200).json({ status: "success", orderNum });
@@ -53,7 +54,7 @@ orderController.getOrder = async (req, res) => {
       populate: {
         path: "productId",
         model: "Product",
-        select: "image name",
+        select: "image name sale",
       },
     });
     const totalItemNum = await Order.find({ userId }).countDocuments();
