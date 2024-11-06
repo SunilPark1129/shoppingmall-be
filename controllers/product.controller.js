@@ -51,11 +51,24 @@ productController.getProduct = async (req, res) => {
       // 카테고리를 두개 이상 받아 올 수 있음으로 항상 어레이로 묶어주기
       const categoryArray = Array.isArray(category) ? category : [category];
 
+      // sale !== 0 -> 가져오기
+      if (categoryArray.includes("sale")) {
+        cond.sale = { $ne: 0 };
+      }
+
+      const filteredCategoryArray = categoryArray.filter(
+        (item) => item !== "sale"
+      );
+
       // 어레이 경우
       // $in 사용 어레이에 있는 스트링 or 상태로 다 가져온다
       // $all 사용하면 어레이에 포함된것만 and 상태로 가져온다
-      cond.category = { $all: categoryArray };
+      if (filteredCategoryArray.length !== 0) {
+        cond.category = { $all: filteredCategoryArray };
+      }
     }
+
+    console.log(cond);
 
     let query = Product.find(cond);
     const response = { status: "success" };
