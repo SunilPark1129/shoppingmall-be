@@ -6,7 +6,13 @@ const indexRouter = require("./routes/index");
 const app = express();
 
 require("dotenv").config();
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://shoppingmall-spark.netlify.app"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
