@@ -3,7 +3,7 @@ const { randomStringGenerator } = require("../utils/randomStringGenerator");
 const productController = require("./product.controller");
 
 const orderController = {};
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 3;
 
 orderController.createOrder = async (req, res) => {
   try {
