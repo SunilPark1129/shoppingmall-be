@@ -146,7 +146,7 @@ productController.updateProduct = async (req, res) => {
     if (!product) throw new Error("item doesn't exist");
     res.status(200).json({ status: "success", data: product });
   } catch (error) {
-    res.status(400).json({ status: "fail", data: error.message });
+    res.status(400).json({ status: "fail", message: error.message });
   }
 };
 
@@ -177,7 +177,7 @@ productController.deleteProduct = async (req, res) => {
     if (!product) throw new Error("could not find item id");
     res.status(200).json({ status: "success", data: product });
   } catch (error) {
-    res.status(400).json({ status: "fail", data: error.message });
+    res.status(400).json({ status: "fail", message: error.message });
   }
 };
 
@@ -190,38 +190,56 @@ productController.checkStock = async (item) => {
     // 재고가 불충분하면 불충분 메세지와 함께 데이터 반환
     return {
       isVerify: false,
-      message: `Insufficient stock for ${product.name} in size ${item.size}.`,
+      message: `Insufficient stock for ${product.name} in size ${item.size}. `,
     };
   }
+
+  // 충분하다면, 제고에서 - qty 성공
+  return { isVerify: true, message: "" };
+};
+
+productController.updateStock = async (item) => {
+  const product = await Product.findById(item.productId);
 
   const newStock = { ...product.stock };
   newStock[item.size] -= item.qty;
   product.stock = newStock;
-  await product.save();
 
-  // 충분하다면, 제고에서 - qty 성공
-  return { isVerify: true };
+  await product.save();
+  return;
 };
 
 productController.checkItemListStock = async (itemList) => {
   try {
-    // 불충분한 아이템이 있으면 어레이에 추가
     const insufficientStockItems = [];
-
     // 재고 확인 로직
     // Promise all로 통해서 비동기를 동시에 다 실행시킨다
     await Promise.all(
       itemList.map(async (item) => {
         const stockCheck = await productController.checkStock(item);
-        if (!stockCheck.isVerify) {
-          insufficientStockItems.push({ item, message: stockCheck.message });
-        }
-        return stockCheck;
+        if (!stockCheck.isVerify)
+          return insufficientStockItems.push(stockCheck);
       })
     );
 
-    return insufficientStockItems;
-  } catch (error) {}
+    if (insufficientStockItems.length > 0) {
+      const errorMessage = insufficientStockItems.reduce(
+        (total, item) => (total += item.message),
+        ""
+      );
+      throw new Error(errorMessage);
+    }
+
+    await Promise.all(
+      itemList.map(async (item) => {
+        await productController.updateStock(item);
+      })
+    );
+
+    return;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 module.exports = productController;

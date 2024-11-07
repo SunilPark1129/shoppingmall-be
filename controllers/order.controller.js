@@ -12,19 +12,10 @@ orderController.createOrder = async (req, res) => {
     const { userId } = req;
     const { shipTo, contact, totalPrice, orderList, sale } = req.body;
 
-    // 재고 확인 & 재고 업데이트
-    const insufficientStockItems = await productController.checkItemListStock(
-      orderList
-    );
-
-    // 재고가 충분하지 않는 아이템이 존재한다면 => 에러 반환
-    if (insufficientStockItems.length > 0) {
-      const errorMessage = insufficientStockItems.reduce(
-        (total, item) => (total += item.message),
-        ""
-      );
-      throw new Error(errorMessage);
-    }
+    // 재고 확인하기
+    // 문제 있을시에 checkItemListStock에서 erorr를 throw함
+    // 문제가 없다면 DB stock 값들을 유저가 재고를 선택한만큼 빼줌
+    await productController.checkItemListStock(orderList);
 
     const orderNum = randomStringGenerator();
 
